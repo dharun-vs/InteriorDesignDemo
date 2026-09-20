@@ -102,7 +102,7 @@ export function Header() {
       <div className="header-shell">
         <nav className="main-nav" aria-label="Main navigation">
           <div className="nav-group nav-brand">
-            <a href="#top" className="brand-mark" aria-label="Atelier home">
+            <a href="#home" className="brand-mark" aria-label="Atelier home">
               Atelier
             </a>
           </div>

@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="app-shell">
       <Header />
-      <main id="top" aria-label="Page content">
+      <main id="home" aria-label="Page content">
         <Hero />
       </main>
     </div>
