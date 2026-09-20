@@ -1,11 +1,12 @@
 import { Header } from './components/Header'
+import { Hero } from './components/Hero'
 
 function App() {
   return (
     <div className="app-shell">
       <Header />
-      <main id="top" className="page-shell" aria-label="Page content">
-        <div className="page-placeholder" aria-hidden="true" />
+      <main id="top" aria-label="Page content">
+        <Hero />
       </main>
     </div>
   )
