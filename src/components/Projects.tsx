@@ -10,6 +10,7 @@ const projects = [
     type: '01 — RESIDENTIAL',
     image: project01,
     alt: 'Quiet Geometry interior study',
+    description: 'A calm study in proportion, light, and restrained material layers.',
   },
   {
     id: '02',
@@ -17,6 +18,7 @@ const projects = [
     type: '02 — RESIDENTIAL',
     image: project02,
     alt: 'Warm Threshold interior study',
+    description: 'A tactile residence shaped by warm timber, softened edges, and pause.',
   },
   {
     id: '03',
@@ -24,6 +26,7 @@ const projects = [
     type: '03 — RESIDENTIAL',
     image: project03,
     alt: 'Material House interior study',
+    description: 'A grounded composition of natural stone, texture, and quiet volume.',
   },
 ] as const
 
@@ -48,17 +51,17 @@ export function Projects() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
           }
         })
       },
       {
-        threshold: 0.18,
-        rootMargin: '0px 0px -12% 0px',
+        threshold: 0.12,
+        rootMargin: '0px 0px -8% 0px',
       },
     )
 
     items.forEach((item) => observer.observe(item))
-
     return () => {
       observer.disconnect()
     }
@@ -92,8 +95,9 @@ export function Projects() {
               </div>
 
               <div className="project-body">
-                <p className="project-index">{project.type}</p>
                 <h3 className="project-title">{project.name}</h3>
+                <p className="project-description">{project.description}</p>
+                <p className="project-index">{project.type}</p>
               </div>
             </article>
           ))}

@@ -80,6 +80,104 @@ export function Header() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMenuOpen])
 
+  useEffect(() => {
+    const desktopQuery = window.matchMedia('(min-width: 821px)')
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const allowedAnchors = new Set(['#home', '#projects', '#studio', '#services', '#contact'])
+    let animationFrame: number | null = null
+    let previousScrollBehavior: string | null = null
+
+    const stopScrollAnimation = () => {
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame)
+        animationFrame = null
+      }
+
+      if (previousScrollBehavior !== null) {
+        document.documentElement.style.scrollBehavior = previousScrollBehavior
+        previousScrollBehavior = null
+      }
+    }
+
+    if (!desktopQuery.matches || reducedMotionQuery.matches) {
+      return
+    }
+
+    const handleAnchorClick = (event: MouseEvent) => {
+      const target = event.target
+      if (!(target instanceof Element)) {
+        return
+      }
+
+      const link = target.closest('a') as HTMLAnchorElement | null
+      if (!link) {
+        return
+      }
+
+      const hash = link.getAttribute('href')
+      if (!hash || !allowedAnchors.has(hash) || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return
+      }
+
+      const targetId = hash.slice(1)
+      const section = document.getElementById(targetId)
+      if (!section) {
+        return
+      }
+
+      event.preventDefault()
+      stopScrollAnimation()
+
+      const siteHeader = document.querySelector('.site-header')
+      const nav = siteHeader?.querySelector('.main-nav') as HTMLElement | null
+      const headerOffset = nav ? nav.getBoundingClientRect().height + 28 : 110
+      const startY = window.scrollY
+      const targetY = section.getBoundingClientRect().top + startY - headerOffset
+      const distance = targetY - startY
+
+      if (Math.abs(distance) < 2) {
+        window.history.pushState(null, '', hash)
+        return
+      }
+
+      const duration = 760
+      const easeOutCubic = (time: number) => 1 - (1 - time) ** 3
+      let startTime: number | null = null
+      previousScrollBehavior = document.documentElement.style.scrollBehavior
+      document.documentElement.style.scrollBehavior = 'auto'
+
+      const tick = (timestamp: number) => {
+        if (startTime === null) {
+          startTime = timestamp
+        }
+
+        const progress = Math.min((timestamp - startTime) / duration, 1)
+        const eased = easeOutCubic(progress)
+
+        window.scrollTo({ top: startY + distance * eased, behavior: 'auto' })
+
+        if (progress < 1) {
+          animationFrame = window.requestAnimationFrame(tick)
+          return
+        }
+
+        animationFrame = null
+        document.documentElement.style.scrollBehavior = previousScrollBehavior ?? ''
+        previousScrollBehavior = null
+        window.history.pushState(null, '', hash)
+      }
+
+      animationFrame = window.requestAnimationFrame(tick)
+    }
+
+    document.addEventListener('click', handleAnchorClick)
+
+    return () => {
+      document.removeEventListener('click', handleAnchorClick)
+      stopScrollAnimation()
+    }
+  }, [])
+
   const toggleMenu = () => {
     if (isMenuOpen) {
       setIsMenuOpen(false)
