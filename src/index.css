@@ -975,6 +975,10 @@ button {
     margin-top: -86px;
   }
 
+  .hero-stage {
+    height: 100dvh;
+  }
+
   .hero-image-frame {
     min-height: 0;
     max-height: none;
