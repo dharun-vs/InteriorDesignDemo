@@ -16,7 +16,10 @@ export function Hero() {
     const updateProgress = () => {
       frame = 0
       const bounds = hero.getBoundingClientRect()
-      const travel = Math.max(bounds.height, window.innerHeight, 1)
+      const isMobile = window.matchMedia('(max-width: 820px)').matches
+      const travel = isMobile
+        ? Math.max(bounds.height - window.innerHeight, 1)
+        : Math.max(bounds.height, window.innerHeight, 1)
       const progress = Math.min(Math.max(-bounds.top / travel, 0), 1)
       hero.style.setProperty('--hero-progress', progress.toFixed(3))
     }
